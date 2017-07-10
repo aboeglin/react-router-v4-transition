@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 export class TransitionTransmitter extends React.Component {
 
     static contextTypes = {
-        updateTransitionStatus: PropTypes.func//(data) => this.currentTransitionHasFinished(data)
+        updateTransitionStatus: PropTypes.func
     };
 
     constructor(props) {

@@ -1,25 +1,27 @@
 var webpack = require('webpack');
 var path = require('path');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+    watch: true,
     devtool: 'cheap-module-source-map',
     entry: {
-        bundle: path.resolve(__dirname, 'src/index.js')
+        bundle: path.resolve(__dirname, 'src/example/index.js')
     },
     output: {
-        path: path.resolve(__dirname, 'lib'),
-        filename: "react-router-v4-transition.js",
-        library: 'ReactRouterTransition',
-        libraryTarget: 'umd'
+        path: path.resolve(__dirname, 'example'),
+        filename: "bundle.js"
     },
-    externals: [
-        'react',
-        'react-dom',
-        'react-router',
-        'prop-types',
-        'react-transition-group',
-        'react-transition-group/utils/ChildMapping'
+    plugins: [
+        new CopyWebpackPlugin([
+            {from: 'src/example/index.html', to: 'index.html'}
+        ])
     ],
+    devServer: {
+        contentBase: path.join(__dirname, "/example"),
+        compress: true,
+        port: 8080
+    },
     module: {
         rules: [
             {
