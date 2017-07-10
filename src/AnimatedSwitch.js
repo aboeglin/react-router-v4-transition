@@ -4,6 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {matchPath, withRouter} from 'react-router';
+import {TransitionRoute} from './TransitionRoute';
 
 @withRouter
 export class AnimatedSwitch extends React.Component {
@@ -22,6 +23,7 @@ export class AnimatedSwitch extends React.Component {
         super(props, context);
 
         this.activeChild = null;
+
         this.state = {
             status: ''
         }
@@ -40,17 +42,13 @@ export class AnimatedSwitch extends React.Component {
     render() {
         if(this.activeChild && this.status != 'DID_LEAVE') {
             // console.log('active: '+this.status)
-            return this.activeChild ? this.activeChild[0] : null;
-
+            return this.activeChild ? this.activeChild : null;
         }
         else {
             this.activeChild = null;
         }
 
-
-        let found = false;
-
-        let children = React.Children.map(this.props.children, child => {
+        React.Children.forEach(this.props.children, child => {
 
             let match = matchPath(this.props.location.pathname, {
                 path: child.props.path,
@@ -58,22 +56,12 @@ export class AnimatedSwitch extends React.Component {
                 strict: child.props.strict
             });
 
-            if(!found && match) {
-                found = true;
-
-                let clone = React.cloneElement(child, {
-                    onStateChange: (value) => this.onStateChange(value)
-                });
-
+            if(!this.activeChild && match) {
                 this.activeChild = child;
-
-                return clone;
             }
         });
 
-        this.activeChild = children;
-
-        return children ? children[0] : null;
+        return this.activeChild ? this.activeChild : null
     }
 
 }
