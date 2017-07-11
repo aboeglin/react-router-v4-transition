@@ -24,11 +24,11 @@ class ExampleApp extends React.Component {
                     <Link to="/otherPath">Other Path</Link>
                 </nav>
                 <div className="example-app__content">
-                    <AnimatedSwitch>
+                    <AnimatedSwitch parallel={true}>
                         <TransitionRoute exact path="/">
                             <Transition>root path</Transition>
                         </TransitionRoute>
-                        <TransitionRoute exact path="/otherPath">
+                        <TransitionRoute path="/otherPath">
                             <Transition>other path</Transition>
                         </TransitionRoute>
                         <TransitionRoute path="/">
@@ -43,6 +43,10 @@ class ExampleApp extends React.Component {
 
 class Transition extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
     componentWillAppear(cb) {
         TweenLite.fromTo(ReactDOM.findDOMNode(this), .5, {x: -100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
     }
@@ -52,7 +56,7 @@ class Transition extends React.Component {
     }
 
     componentWillEnter(cb) {
-        TweenLite.fromTo(ReactDOM.findDOMNode(this), .5, {x: -100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
+        TweenLite.fromTo(ReactDOM.findDOMNode(this), .5, {x: 100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
     }
 
     componentDidEnter() {

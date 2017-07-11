@@ -5,6 +5,7 @@ import {render, mount} from 'enzyme';
 import React from 'react';
 import {MemoryRouter} from 'react-router';
 import {AnimatedSwitch, TransitionRoute} from './';
+import {TransitionTransmitter} from './TransitionTransmitter';
 import PropTypes from 'prop-types';
 import sinon from 'sinon';
 
@@ -32,38 +33,36 @@ describe('AnimatedSwitch', () => {
 
         const transition = wrapper.find(Transition);
 
-        // expect(Transition.prototype.componentDidAppear).toHaveBeenCalledTimes(0);
         expect(didAppearMock.mock.calls.length).toBe(0);
         jest.runAllTimers();
         expect(didAppearMock.mock.calls.length).toBe(1);
-        // expect(Transition.prototype.componentDidAppear).toHaveBeenCalledTimes(1);
     });
 
     it('should update state.status of AnimatedSwitch', () => {
         jest.useFakeTimers();
+        sinon.spy(TransitionTransmitter.prototype, 'componentDidLeave');
+        sinon.spy(TransitionTransmitter.prototype, 'componentWillEnter');
         const wrapper = mount(<TestApp />);
+        const routerWrapper = wrapper.find(MemoryRouter);
 
         expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('WILL_APPEAR');
         jest.runAllTimers();
         expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('DID_APPEAR');
 
         //We change the current path to create the transition
-        const routerWrapper = wrapper.find(MemoryRouter);
         routerWrapper.node.history.push('/otherPath');
 
         expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('WILL_LEAVE');
         expect(wrapper.find(TransitionRoute).length).toBe(1);
         jest.runTimersToTime(1000);
-        // console.log(wrapper.find(Transition).node.props.children)
-        expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('WILL_APPEAR');
+        expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('WILL_ENTER');
         expect(wrapper.find(TransitionRoute).length).toBe(1);
         jest.runAllTimers();
-        expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('DID_APPEAR');
+        expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('DID_ENTER');
 
-
-        // console.log(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status)
-
-        // console.log(routerWrapper)
+        //Since DID_LEAVE of the previous component and WILL_APPEAR of the next one are triggered together,
+        //it's easier to just check it's been called once in the transition process.
+        expect(TransitionTransmitter.prototype.componentDidLeave.calledOnce).toBe(true);
     });
 
 });
