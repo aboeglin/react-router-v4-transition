@@ -4,10 +4,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {matchPath, withRouter} from 'react-router';
-import {TransitionRoute} from './TransitionRoute';
 
 @withRouter
 export class AnimatedSwitch extends React.Component {
+
+    static propTypes = {
+        parallel: PropTypes.bool
+    };
 
     static childContextTypes = {
         updateTransitionStatus: PropTypes.func
@@ -31,17 +34,14 @@ export class AnimatedSwitch extends React.Component {
 
     updateTransitionStatus(data) {
         if(!(this.status == 'DID_LEAVE' && data == 'WILL_LEAVE'))
-            this.status = data;
-
-        this.setState({
-            ...this.state,
-            status: data
-        });
+            this.setState({
+                ...this.state,
+                status: data
+            });
     }
 
-    render() {
-        if(this.activeChild && this.status != 'DID_LEAVE') {
-            // console.log('active: '+this.status)
+    renderUnparallel() {
+        if(this.activeChild && this.state.status != 'DID_LEAVE') {
             return this.activeChild ? this.activeChild : null;
         }
         else {
@@ -62,6 +62,14 @@ export class AnimatedSwitch extends React.Component {
         });
 
         return this.activeChild ? this.activeChild : null
+    }
+
+    renderParallel() {
+
+    }
+
+    render() {
+        return this.renderUnparallel();
     }
 
 }

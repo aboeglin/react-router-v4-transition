@@ -24,7 +24,7 @@ class ExampleApp extends React.Component {
                     <Link to="/otherPath">Other Path</Link>
                 </nav>
                 <div className="example-app__content">
-                    <AnimatedSwitch>
+                    <AnimatedSwitch parallel={true}>
                         <TransitionRoute exact path="/">
                             <Transition>root path</Transition>
                         </TransitionRoute>
@@ -45,8 +45,6 @@ class Transition extends React.Component {
 
     constructor(props) {
         super(props);
-
-        console.log('constructor: '+this.props.children);
     }
 
     componentWillAppear(cb) {
