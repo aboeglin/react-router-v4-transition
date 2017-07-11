@@ -8,6 +8,10 @@ import {matchPath, withRouter} from 'react-router';
 @withRouter
 export class AnimatedSwitch extends React.Component {
 
+    static propTypes = {
+        parallel: PropTypes.bool
+    };
+
     static childContextTypes = {
         updateTransitionStatus: PropTypes.func
     };
@@ -22,6 +26,7 @@ export class AnimatedSwitch extends React.Component {
         super(props, context);
 
         this.activeChild = null;
+
         this.state = {
             status: ''
         }
@@ -29,28 +34,21 @@ export class AnimatedSwitch extends React.Component {
 
     updateTransitionStatus(data) {
         if(!(this.status == 'DID_LEAVE' && data == 'WILL_LEAVE'))
-            this.status = data;
-
-        this.setState({
-            ...this.state,
-            status: data
-        });
+            this.setState({
+                ...this.state,
+                status: data
+            });
     }
 
-    render() {
-        if(this.activeChild && this.status != 'DID_LEAVE') {
-            // console.log('active: '+this.status)
-            return this.activeChild ? this.activeChild[0] : null;
-
+    renderUnparallel() {
+        if(this.activeChild && this.state.status != 'DID_LEAVE') {
+            return this.activeChild ? this.activeChild : null;
         }
         else {
             this.activeChild = null;
         }
 
-
-        let found = false;
-
-        let children = React.Children.map(this.props.children, child => {
+        React.Children.forEach(this.props.children, child => {
 
             let match = matchPath(this.props.location.pathname, {
                 path: child.props.path,
@@ -58,22 +56,20 @@ export class AnimatedSwitch extends React.Component {
                 strict: child.props.strict
             });
 
-            if(!found && match) {
-                found = true;
-
-                let clone = React.cloneElement(child, {
-                    onStateChange: (value) => this.onStateChange(value)
-                });
-
+            if(!this.activeChild && match) {
                 this.activeChild = child;
-
-                return clone;
             }
         });
 
-        this.activeChild = children;
+        return this.activeChild ? this.activeChild : null
+    }
 
-        return children ? children[0] : null;
+    renderParallel() {
+
+    }
+
+    render() {
+        return this.renderUnparallel();
     }
 
 }
