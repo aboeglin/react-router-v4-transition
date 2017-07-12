@@ -4,12 +4,12 @@
 import {render, mount} from 'enzyme';
 import React from 'react';
 import {MemoryRouter} from 'react-router';
-import {AnimatedSwitch, TransitionRoute} from './';
+import {TransitionSwitch, TransitionRoute} from './';
 import {TransitionTransmitter} from './TransitionTransmitter';
 import PropTypes from 'prop-types';
 import sinon from 'sinon';
 
-describe('AnimatedSwitch', () => {
+describe('TransitionSwitch', () => {
     beforeAll(() => {
         fixContext();
 
@@ -79,7 +79,7 @@ class TestApp extends React.Component {
     render() {
         return(
             <MemoryRouter initialEntries={['/']} initialIndex={0}>
-                <AnimatedSwitch>
+                <TransitionSwitch>
                     <TransitionRoute exact path="/">
                         <Transition>root path</Transition>
                     </TransitionRoute>
@@ -89,7 +89,7 @@ class TestApp extends React.Component {
                     <TransitionRoute path="/">
                         <Transition/>
                     </TransitionRoute>
-                </AnimatedSwitch>
+                </TransitionSwitch>
             </MemoryRouter>
         );
     }

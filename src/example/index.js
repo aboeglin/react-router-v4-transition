@@ -3,10 +3,10 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter, Link} from 'react-router-dom';
+import {BrowserRouter, Link, Route} from 'react-router-dom';
 import {TweenLite} from 'gsap';
 
-import {AnimatedSwitch, TransitionRoute} from '../';
+import {TransitionSwitch, TransitionRoute} from '../';
 
 /**
  * Example App to showcase the use of react-router-v4-transition.
@@ -22,25 +22,30 @@ class ExampleApp extends React.Component {
                 <nav className="example-app__menu">
                     <Link to="/">Home</Link>
                     <Link to="/otherPath">Other Path</Link>
+                    <Link to="/anotherPath">Another Path</Link>
                 </nav>
                 <div className="example-app__content">
-                    <AnimatedSwitch parallel={true}>
-                        <TransitionRoute exact path="/">
-                            <Transition>root path</Transition>
-                        </TransitionRoute>
-                        <TransitionRoute path="/otherPath">
+                    <TransitionSwitch parallel={false}>
+                        <Route exact path="/">
+                            <Transition>home path</Transition>
+                        </Route>
+                        <Route path="/otherPath">
                             <Transition>other path</Transition>
-                        </TransitionRoute>
-                        <TransitionRoute path="/">
-                            <Transition/>
-                        </TransitionRoute>
-                    </AnimatedSwitch>
+                        </Route>
+                        <Route path="/">
+                            <Transition>other home</Transition>
+                        </Route>
+                        <Route path="/anotherPath">
+                            <Transition>another path</Transition>
+                        </Route>
+                    </TransitionSwitch>
                 </div>
             </div>
         );
     }
 }
 
+let d = 1;
 class Transition extends React.Component {
 
     constructor(props) {
@@ -48,7 +53,7 @@ class Transition extends React.Component {
     }
 
     componentWillAppear(cb) {
-        TweenLite.fromTo(ReactDOM.findDOMNode(this), .5, {x: -100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
+        TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: -100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
     }
 
     componentDidAppear() {
@@ -56,7 +61,7 @@ class Transition extends React.Component {
     }
 
     componentWillEnter(cb) {
-        TweenLite.fromTo(ReactDOM.findDOMNode(this), .5, {x: 100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
+        TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: 100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
     }
 
     componentDidEnter() {
@@ -64,7 +69,7 @@ class Transition extends React.Component {
     }
 
     componentWillLeave(cb) {
-        TweenLite.fromTo(ReactDOM.findDOMNode(this), .5, {x: 0, opacity: 1}, {x: -100, opacity:0, onComplete: () => cb()});
+        TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: 0, opacity: 1}, {x: -100, opacity:0, onComplete: () => cb()});
     }
 
     componentDidLeave() {
@@ -73,7 +78,9 @@ class Transition extends React.Component {
 
     render() {
         return (
-            <div>{this.props.children}</div>
+            <div style={{
+                position: 'absolute'
+            }}>{this.props.children}</div>
         );
     }
 
