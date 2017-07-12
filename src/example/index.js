@@ -50,6 +50,16 @@ class Transition extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.mounted = false;
+    }
+
+    componentWillMount() {
+        this.mounted = true;
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     componentWillAppear(cb) {
@@ -69,7 +79,8 @@ class Transition extends React.Component {
     }
 
     componentWillLeave(cb) {
-        TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: 0, opacity: 1}, {x: -100, opacity:0, onComplete: () => cb()});
+        // if(this.mounted)
+            TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: 0, opacity: 1}, {x: -100, opacity:0, onComplete: () => cb()});
     }
 
     componentDidLeave() {

@@ -15,8 +15,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1",
-    "react-transition-group": "^1.2.0"
+    "react-router-dom": "^4.1.1"
   },
   "peerDependencies": {
     "react": "^15.0.0",
@@ -45,6 +44,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "npm test -- --watch",
+    "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "build:dev": "webpack",
     "build:prod": "webpack --progress -p",

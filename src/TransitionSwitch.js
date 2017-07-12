@@ -5,6 +5,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {matchPath, withRouter} from 'react-router';
 
+/**
+ * @class TransitionSwitch
+ *
+ * TransitionSwitch offers a way to get easy route transitions with
+ * the router v4.
+ */
 @withRouter
 export class TransitionSwitch extends React.Component {
 
@@ -19,7 +25,6 @@ export class TransitionSwitch extends React.Component {
             route: PropTypes.object.isRequired
         }).isRequired
     };
-
 
     constructor(props, context) {
         super(props, context);
@@ -56,14 +61,17 @@ export class TransitionSwitch extends React.Component {
 
             if(!found && match) {
                 found = true;
-                console.log('found')
 
+                //In case it's the current child we do nothing
                 if(this.state.enteringRoute) {
                     if(this.state.enteringRoute.key == child.key)
                         return
                 }
 
-                this.leavingRouteChildRef = this.enteringRouteChildRef;
+                //If it's not parallel, it would happen when a route change occurs while transitioning.
+                //In that case we keep the original leaving element, and we just replace the entering element
+                if(!this.state.leavingRoute || this.props.parallel)
+                    this.leavingRouteChildRef = this.enteringRouteChildRef;
 
                 let enteringRoute = React.cloneElement(child, {
                     children: React.cloneElement(child.props.children, {
@@ -76,7 +84,7 @@ export class TransitionSwitch extends React.Component {
 
                 this.setState({
                     ...this.state,
-                    leavingRoute: this.state.enteringRoute,
+                    leavingRoute: this.state.leavingRoute && !this.props.parallel ? this.state.leavingRoute : this.state.enteringRoute,
                     enteringRoute: enteringRoute
                 });
             }
@@ -84,7 +92,6 @@ export class TransitionSwitch extends React.Component {
     }
 
     render() {
-
         let enteringRoute = null;
 
         if(!this.props.parallel) {
@@ -115,23 +122,21 @@ export class TransitionSwitch extends React.Component {
         if(this.props.parallel)
             this.enteringRouteChildRef.componentWillEnter(() => this._enteringChildEntered());
 
-        if(this.leavingRouteChildRef) {
+        //If there's a ref and there wasn't a leaving route in the previous state
+        if(this.leavingRouteChildRef && (!prevState.leavingRoute || this.props.parallel)) {
             this.leavingRouteChildRef.componentWillLeave(() => this._leavingChildLeaved());
         }
     }
 
     _enteringChildAppeared() {
-        console.log('appeared');
         this.enteringRouteChildRef.componentDidAppear();
     }
 
     _enteringChildEntered() {
-        console.log('entered');
         this.enteringRouteChildRef.componentDidEnter();
     }
 
     _leavingChildLeaved() {
-        console.log('leaved');
         if(this.leavingRouteChildRef)
             this.leavingRouteChildRef.componentDidLeave();
 
@@ -141,8 +146,8 @@ export class TransitionSwitch extends React.Component {
             leavingRoute: null
         });
 
+        //If it's not parallel, we start the entering transition when the leaving child has left.
         if(!this.props.parallel && this.enteringRouteChildRef)
             this.enteringRouteChildRef.componentWillEnter(() => this._enteringChildEntered());
     }
-
 }

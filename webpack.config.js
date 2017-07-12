@@ -9,16 +9,14 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'lib'),
         filename: "react-router-v4-transition.js",
-        library: 'ReactRouterTransition',
+        library: 'ReactRouterV4Transition',
         libraryTarget: 'umd'
     },
     externals: [
         'react',
         'react-dom',
         'react-router',
-        'prop-types',
-        'react-transition-group',
-        'react-transition-group/utils/ChildMapping'
+        'prop-types'
     ],
     module: {
         rules: [
