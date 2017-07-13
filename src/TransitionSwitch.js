@@ -121,7 +121,6 @@ export class TransitionSwitch extends React.Component {
         else {
             this._enteringChildAppeared();
         }
-
     }
 
     componentDidUpdate(prevProps, prevState) {
