@@ -20,6 +20,10 @@ export class TransitionSwitch extends React.Component {
         location: PropTypes.object
     };
 
+    static defaultProps = {
+        parallel: false
+    };
+
     static contextTypes = {
         router: PropTypes.shape({
             route: PropTypes.object.isRequired
@@ -111,33 +115,51 @@ export class TransitionSwitch extends React.Component {
     }
 
     componentDidMount() {
-        if(this.enteringRouteChildRef)
+        if(this.enteringRouteChildRef && this.enteringRouteChildRef.componentWillAppear) {
             this.enteringRouteChildRef.componentWillAppear(() => this._enteringChildAppeared());
+        }
+        else {
+            this._enteringChildAppeared();
+        }
+
     }
 
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.location.pathname == this.props.location.pathname && prevProps.match.isExact == this.props.match.isExact)
             return;
 
-        if(this.props.parallel)
-            this.enteringRouteChildRef.componentWillEnter(() => this._enteringChildEntered());
+        if(this.enteringRouteChildRef.componentWillEnter) {
+            if(this.props.parallel)
+                this.enteringRouteChildRef.componentWillEnter(() => this._enteringChildEntered());
+        }
+        else {
+            this._enteringChildEntered();
+        }
 
         //If there's a ref and there wasn't a leaving route in the previous state
-        if(this.leavingRouteChildRef && (!prevState.leavingRoute || this.props.parallel)) {
-            this.leavingRouteChildRef.componentWillLeave(() => this._leavingChildLeaved());
+        if(this.leavingRouteChildRef.componentWillLeave) {
+            if(this.leavingRouteChildRef && (!prevState.leavingRoute || this.props.parallel)) {
+                this.leavingRouteChildRef.componentWillLeave(() => this._leavingChildLeaved());
+            }
         }
+        else {
+            this._leavingChildLeaved();
+        }
+
     }
 
     _enteringChildAppeared() {
-        this.enteringRouteChildRef.componentDidAppear();
+        if(this.enteringRouteChildRef.componentDidAppear)
+            this.enteringRouteChildRef.componentDidAppear();
     }
 
     _enteringChildEntered() {
-        this.enteringRouteChildRef.componentDidEnter();
+        if(this.enteringRouteChildRef.componentDidEnter)
+            this.enteringRouteChildRef.componentDidEnter();
     }
 
     _leavingChildLeaved() {
-        if(this.leavingRouteChildRef)
+        if(this.leavingRouteChildRef && this.leavingRouteChildRef.componentDidLeave)
             this.leavingRouteChildRef.componentDidLeave();
 
         this.leavingRouteChildRef = null;
@@ -147,7 +169,7 @@ export class TransitionSwitch extends React.Component {
         });
 
         //If it's not parallel, we start the entering transition when the leaving child has left.
-        if(!this.props.parallel && this.enteringRouteChildRef)
+        if(!this.props.parallel && this.enteringRouteChildRef && this.enteringRouteChildRef.componentWillEnter)
             this.enteringRouteChildRef.componentWillEnter(() => this._enteringChildEntered());
     }
 }

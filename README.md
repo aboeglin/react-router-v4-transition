@@ -1,12 +1,12 @@
 # React Router Transition
 [![Build Status](https://travis-ci.org/aboeglin/react-router-v4-transition.png?branch=master)](https://travis-ci.org/aboeglin/react-router-v4-transition) [![Coverage Status](https://coveralls.io/repos/github/aboeglin/react-router-v4-transition/badge.svg?branch=master)](https://coveralls.io/github/aboeglin/react-router-v4-transition?branch=master)
 
-Transitions for React Router v4. The API is composed of two components that will allow the Switch
-component from react-router v4 to switch from a route to another one with a transition.
+Transitions for React Router v4. The API is composed of a component, TransitionSwitch, that should be used as the Switch
+component from react-router v4 to switch from a route to another one a transition.
 
-##API Description
+## API Description
 
-###1) The component:
+### 1) The component:
 ```javascript
 <TransitionSwitch parallel={false}>
     <Route exact path="/">
@@ -29,7 +29,7 @@ means that only one route will be visible at all times. Except if parallel is se
 transition won't wait for the leaving transition to be finished.
 NB: parallel may be renamed in the next revision.
 
-###2) The transitions:
+### 2) The transitions:
 Like a switch, the children must be Route elements. The children of these route elements will be given hooks to perform
 the transition. These hooks are :
 
@@ -50,7 +50,7 @@ The callbacks must be called after the transition is complete, in the case of an
 onComplete. The interface is very much the same as react-trasition-group v1. Meaning that componentWillAppear is called
 for the first time when the TransitionSwitch is mounted.
 
-##Sample App
+## Sample App
 
 In case you want to quickly try it, there's a webpack setup and very rough sample app. 
 In order to build it you should run :
