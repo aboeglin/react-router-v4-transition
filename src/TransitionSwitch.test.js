@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import sinon from 'sinon';
 
 describe('TransitionSwitch', () => {
-
     const spies = [];
 
     beforeAll(() => {
@@ -37,7 +36,6 @@ describe('TransitionSwitch', () => {
 
     it('should call componentDidAppear after transition', () => {
         jest.useFakeTimers();
-
         const wrapper = mount(<TestApp />);
 
         expect(Transition.prototype.componentDidAppear.called).toBe(false);
@@ -47,7 +45,6 @@ describe('TransitionSwitch', () => {
 
     it('should call transition hooks', () => {
         jest.useFakeTimers();
-
         const wrapper = mount(<TestApp />);
         const routerWrapper = wrapper.find(MemoryRouter);
 
@@ -154,7 +151,6 @@ class TestAppParallel extends React.Component {
         );
     }
 }
-
 class TestApp extends React.Component {
 
     render() {

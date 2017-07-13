@@ -50,6 +50,16 @@ class Transition extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.mounted = false;
+    }
+
+    componentWillMount() {
+        this.mounted = true;
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     componentWillAppear(cb) {
