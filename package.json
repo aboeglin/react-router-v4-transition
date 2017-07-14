@@ -48,6 +48,7 @@
     "test:ci": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "build:dev": "webpack",
     "build:prod": "webpack --progress -p",
+    "prepublish": "webpack --progress -p",
     "build:example": "webpack --config webpack.config.example.js",
     "start:server": "webpack-dev-server --content-base ./example --port 8080 --history-api-fallback index.html"
   },
