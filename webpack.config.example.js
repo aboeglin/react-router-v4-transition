@@ -14,7 +14,8 @@ module.exports = {
     },
     plugins: [
         new CopyWebpackPlugin([
-            {from: 'src/example/index.html', to: 'index.html'}
+            {from: 'src/example/index.html', to: 'index.html'},
+            {from: 'src/example/main.css', to: 'main.css'}
         ])
     ],
     devServer: {

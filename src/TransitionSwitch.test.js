@@ -48,7 +48,7 @@ describe('TransitionSwitch', () => {
         const wrapper = mount(<TestApp />);
         const routerWrapper = wrapper.find(MemoryRouter);
 
-        // expect(wrapper.find(AnimatedSwitch.WrappedComponent).node.state.status).toBe('WILL_APPEAR');
+        // expect(wrapper.find(TransitionSwitch.WrappedComponent).node.state.status).toBe('WILL_APPEAR');
 
         //WILL APPEAR
         jest.runAllTimers();
@@ -72,16 +72,34 @@ describe('TransitionSwitch', () => {
     it('should switch even if no hook is defined', () => {
         jest.useFakeTimers();
 
-        const wrapper = mount(<TestApp />);
+        const wrapper = mount(<TestAppMountWithNoHook />);
         const routerWrapper = wrapper.find(MemoryRouter);
 
+        expect(wrapper.find(TransitionWithoutHooks).length).toBe(1);
+        routerWrapper.node.history.push('/');
+
         routerWrapper.node.history.push('/noHook');
-        jest.runAllTimers(); //It runs the leaving animation of the route at path "/"
+        jest.runAllTimers(); //It runs the leaving transition of the route at path "/"
 
         expect(wrapper.find(TransitionWithoutHooks).length).toBe(1);
     });
 
-    it('should do nothing if there\'s no route change', () => {
+    it('should run the leaving transition and render null if the route is not found', () => {
+        jest.useFakeTimers();
+        const wrapper = mount(<TestAppMountWithNoHook />);
+        const routerWrapper = wrapper.find(MemoryRouter);
+
+        routerWrapper.node.history.push('/'); //We go to "/"
+        routerWrapper.node.history.push('/404'); //We go to a non existing route
+
+        expect(wrapper.find(TransitionSwitch).node.state.enteringRoute).toBe(null);
+        expect(wrapper.find(TransitionSwitch).node.state.leavingRoute).not.toBe(null);
+
+        jest.runAllTimers(); //We run the leaving transition
+        expect(wrapper.find(TransitionSwitch).node.state.leavingRoute).toBe(null);
+    });
+
+    it('should do nothing if there is no route change', () => {
         jest.useFakeTimers();
 
         const wrapper = mount(<TestApp />);
@@ -151,6 +169,7 @@ class TestAppParallel extends React.Component {
         );
     }
 }
+
 class TestApp extends React.Component {
 
     render() {
@@ -168,6 +187,27 @@ class TestApp extends React.Component {
                     </Route>
                     <Route path="/">
                         <Transition/>
+                    </Route>
+                </TransitionSwitch>
+            </MemoryRouter>
+        );
+    }
+}
+
+class TestAppMountWithNoHook extends React.Component {
+
+    render() {
+        return(
+            <MemoryRouter initialEntries={['/noHook']} initialIndex={0}>
+                <TransitionSwitch parallel={false}>
+                    <Route exact path="/">
+                        <Transition>root path</Transition>
+                    </Route>
+                    <Route exact path="/otherPath">
+                        <Transition>other path</Transition>
+                    </Route>
+                    <Route path="/noHook">
+                        <TransitionWithoutHooks/>
                     </Route>
                 </TransitionSwitch>
             </MemoryRouter>

@@ -1,0 +1,39 @@
+html, body {
+    margin: 0;
+    font-family: Arial;
+}
+
+.example-app {
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.example-app__menu {
+    text-align: center;
+}
+
+.example-app__menu > * {
+    display: inline-block;
+    margin-right: 20px;
+    text-decoration: none;
+    color: #555555;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.example-app__transition {
+    position: absolute;
+    width: 60%;
+    margin-left: 10%;
+    margin-top: 50px;
+    background-color: #f8f8f8;
+    height: 200px;
+    border-left: 10px solid #555555;
+    padding-left: 30px;
+    padding-top: 20px;
+    color: #555555;
+    text-transform: uppercase;
+    font-size: .8em;
+    font-weight: bold;
+}

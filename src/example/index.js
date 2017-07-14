@@ -12,7 +12,6 @@ import {TransitionSwitch, TransitionRoute} from '../';
  * Example App to showcase the use of react-router-v4-transition.
  *
  * It uses gsap to animate the elements, but any other library could be used in place.
- * TODO: add some styling and examples using other libraries
  */
 class ExampleApp extends React.Component {
 
@@ -50,16 +49,6 @@ class Transition extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.mounted = false;
-    }
-
-    componentWillMount() {
-        this.mounted = true;
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
     }
 
     componentWillAppear(cb) {
@@ -80,7 +69,7 @@ class Transition extends React.Component {
 
     componentWillLeave(cb) {
         // if(this.mounted)
-            TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: 0, opacity: 1}, {x: -100, opacity:0, onComplete: () => cb()});
+            TweenLite.to(ReactDOM.findDOMNode(this), d, {x: -100, opacity:0, onComplete: () => cb()});
     }
 
     componentDidLeave() {
@@ -89,9 +78,7 @@ class Transition extends React.Component {
 
     render() {
         return (
-            <div style={{
-                position: 'absolute'
-            }}>{this.props.children}</div>
+            <div className="example-app__transition">{this.props.children}</div>
         );
     }
 

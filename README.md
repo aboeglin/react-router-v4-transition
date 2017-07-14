@@ -1,8 +1,9 @@
 # React Router Transition
-[![Build Status](https://travis-ci.org/aboeglin/react-router-v4-transition.png?branch=master)](https://travis-ci.org/aboeglin/react-router-v4-transition) [![Coverage Status](https://coveralls.io/repos/github/aboeglin/react-router-v4-transition/badge.svg?branch=master)](https://coveralls.io/github/aboeglin/react-router-v4-transition?branch=master)
+[![Build Status](https://travis-ci.org/aboeglin/react-router-v4-transition.png?branch=master)](https://travis-ci.org/aboeglin/react-router-v4-transition) [![Coverage Status](https://coveralls.io/repos/github/aboeglin/react-router-v4-transition/badge.svg?branch=master)](https://coveralls.io/github/aboeglin/react-router-v4-transition?branch=master) [![npm version](https://badge.fury.io/js/react-router-v4-transition.svg)](https://badge.fury.io/js/react-router-v4-transition)
 
 Transitions for React Router v4. The API is composed of a component, TransitionSwitch, that should be used as the Switch
-component from react-router v4 to switch from a route to another one a transition.
+component from react-router v4 to switch from a route to another one with a transition. That transition can be any action
+you need to do between routes, like animation, or fetching data.
 
 ## API Description
 
@@ -24,31 +25,54 @@ component from react-router v4 to switch from a route to another one a transitio
 </TransitionSwitch>
 ```
 
-TransitionSwitch allows to perform transitions on route change. Given its name, it works like the router v4 Switch. It
+TransitionSwitch allows you to perform transitions on route change. Given its name, it works like the router v4 Switch. It
 means that only one route will be visible at all times. Except if parallel is set to true, which means that the entering
 transition won't wait for the leaving transition to be finished.
-NB: parallel may be renamed in the next revision.
+NB: parallel may be renamed in the future.
 
 ### 2) The transitions:
 Like a switch, the children must be Route elements. The children of these route elements will be given hooks to perform
 the transition. These hooks are :
 
 ```javascript
-componentWillAppear(callback)
+class Transition extends React.Component {
+    
+    componentWillAppear(callback) {
+        //do something when the component will appear
+        
+        callback();
+    }
+    
+    componentDidAppear() {
+        //do something when the component appeared
+    }
+    
+    componentWillEnter(callback) {
+        //do something when the component will enter
+        
+        callback();
+    }
+    
+    componentDidEnter() {
+        //do something when the component entered
+    }
+    
+    componentWillLeave(callback) {
+        //do something when the component will leave
+                
+        callback();
+    }
+    
+    componentDidLeave() {
+        //do something when the component has left    
+    }
+    
+}
 
-componentDidAppear()
-
-componentWillEnter(callback)
-
-componentDidEnter()
-
-componentWillLeave(callback)
-
-componentDidLeave()
 ```
 The callbacks must be called after the transition is complete, in the case of animation, a good place is in the
-onComplete. The interface is very much the same as react-trasition-group v1. Meaning that componentWillAppear is called
-for the first time when the TransitionSwitch is mounted.
+callback provided by the animation library. The interface is very much the same as react-trasition-group v1.
+This means that componentWillAppear is called for the first time when the TransitionSwitch is mounted.
 
 ## Sample App
 
@@ -64,6 +88,5 @@ sources are located in src/example.
 
 
 In the next update: 
-- improve the tests
-- add warnings for uses that aren't allowed by the API.
-- improve the example app
+- maybe emit transition state changes to the parent of TransitionSwitch via props ? In order to sync transition with 
+other parts.
