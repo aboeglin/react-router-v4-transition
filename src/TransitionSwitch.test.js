@@ -92,11 +92,11 @@ describe('TransitionSwitch', () => {
         routerWrapper.node.history.push('/'); //We go to "/"
         routerWrapper.node.history.push('/404'); //We go to a non existing route
 
-        expect(wrapper.find(TransitionSwitch).node.state.enteringRoute).toBe(null);
-        expect(wrapper.find(TransitionSwitch).node.state.leavingRoute).not.toBe(null);
+        expect(wrapper.find(TransitionSwitch).node.state.enteringRouteKey).toBe(null);
+        expect(wrapper.find(TransitionSwitch).node.state.leavingRouteKey).not.toBe(null);
 
         jest.runAllTimers(); //We run the leaving transition
-        expect(wrapper.find(TransitionSwitch).node.state.leavingRoute).toBe(null);
+        expect(wrapper.find(TransitionSwitch).node.state.leavingRouteKey).toBe(null);
     });
 
     it('should do nothing if there is no route change', () => {
