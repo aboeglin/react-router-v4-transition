@@ -85,8 +85,3 @@ npm run start:server
 The app will be running at localhost:8080, the build command watches for changes in case you want to play with it, the
 sources are located in src/example.
 
-
-
-In the next update: 
-- maybe emit transition state changes to the parent of TransitionSwitch via props ? In order to sync transition with 
-other parts.

@@ -22,7 +22,7 @@ export class TransitionSwitch extends React.Component {
         children: PropTypes.oneOfType([
             PropTypes.arrayOf(routePropType),
             routePropType
-        ]),//PropTypes.node,
+        ]),
         location: PropTypes.object
     };
 
@@ -44,7 +44,8 @@ export class TransitionSwitch extends React.Component {
 
         this.state = {
             enteringRouteKey: null,
-            leavingRouteKey: null
+            leavingRouteKey: null,
+            match: null
         }
     }
 
@@ -95,20 +96,12 @@ export class TransitionSwitch extends React.Component {
                     this.leavingRouteChildRef = this.enteringRouteChildRef;
                     this.enteringRouteChildRef = null;
                 }
-                //
-                // let enteringRoute = React.cloneElement(child, {
-                //     children: React.cloneElement(child.props.children, {
-                //         ref: ref => {
-                //             if(ref)
-                //                 this.enteringRouteChildRef = ref
-                //         }
-                //     })
-                // });
 
                 this.setState({
                     ...this.state,
                     leavingRouteKey: this.state.leavingRouteKey && !this.props.parallel ? this.state.leavingRouteKey : this.state.enteringRouteKey,
-                    enteringRouteKey: child.key
+                    enteringRouteKey: child.key,
+                    match: match
                 });
             }
         });
@@ -121,35 +114,59 @@ export class TransitionSwitch extends React.Component {
             this.setState({
                 ...this.state,
                 leavingRouteKey: this.state.enteringRouteKey,
-                enteringRouteKey: null
+                enteringRouteKey: null,
+                match: null
             });
         }
     }
 
     render() {
-        let enteringRoute = null;
-        let leavingRoute = null;
+        let enteringChild = null;
+        let leavingChild = null;
+
+        const props = {
+            match: this.state.match,
+            location: this.getLocation(this.props, this.context),
+            history: this.context.router.history,
+            staticContext: this.context.router.staticContext
+        };
 
         React.Children.map(this.props.children, child => child).forEach(child => {
 
             if(child.key == this.state.enteringRouteKey) {
-                enteringRoute = React.cloneElement(child, {
-                    children: React.cloneElement(child.props.children, {
-                        ref: ref => {
-                            if (ref)
-                                this.enteringRouteChildRef = ref
-                        }
-                    })
+                let component = null;
+
+                if(child.props.component)
+                    component = React.createElement(child.props.component);
+                else if(child.props.render)
+                    component = child.props.render(props);
+                else
+                    component = child.props.children;
+
+                enteringChild = React.cloneElement(component, {
+                    ref: ref => {
+                        if (ref)
+                            this.enteringRouteChildRef = ref
+                    },
+                    key: `child-${child.key}`
                 });
             }
             else if(child.key == this.state.leavingRouteKey) {
-                leavingRoute = React.cloneElement(child, {
-                    children: React.cloneElement(child.props.children, {
-                        ref: ref => {
-                            if (ref)
-                                this.leavingRouteChildRef = ref
-                        }
-                    })
+                let component = null;
+
+                if(child.props.component)
+                    component = React.createElement(child.props.component);
+                else if(child.props.render)
+                    component = child.props.render(props);
+                else
+                    component = child.props.children;
+
+                leavingChild = React.cloneElement(component, {
+                    ref: ref => {
+                        if (ref)
+                            this.leavingRouteChildRef = ref
+                    },
+                    key: `child-${child.key}`
                 });
             }
 
@@ -158,13 +175,13 @@ export class TransitionSwitch extends React.Component {
         // If it's not parallel, we only render the enteringRoute when the leavingRoute did leave
         if(!this.props.parallel) {
             if(this.state.leavingRouteKey)
-                enteringRoute = null
+                enteringChild = null
         }
 
         return (
             <div>
-                {enteringRoute}
-                {leavingRoute}
+                {enteringChild}
+                {leavingChild}
             </div>
         );
     }
@@ -190,7 +207,6 @@ export class TransitionSwitch extends React.Component {
 
         if(this.state.enteringRouteKey && this.enteringRouteChildRef && this.enteringRouteChildRef.componentWillEnter) {
             if(this.props.parallel) {
-                console.log('trigger enter', this.state.enteringRouteKey)
                 this.enteringRouteChildRef.componentWillEnter(() => this.enteringChildEntered());
             }
         }

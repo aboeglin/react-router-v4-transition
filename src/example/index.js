@@ -20,6 +20,8 @@ class ExampleApp extends React.Component {
             <div className="example-app">
                 <nav className="example-app__menu">
                     <Link to="/">Home</Link>
+                    <Link to="/aTransition">A Transition</Link>
+                    <Link to="/useRender">Render</Link>
                     <Link to="/otherPath">Other Path</Link>
                     <Link to="/anotherPath">Another Path</Link>
                 </nav>
@@ -28,6 +30,12 @@ class ExampleApp extends React.Component {
                         <Route exact path="/">
                             <Transition>home path</Transition>
                         </Route>
+                        <Route path="/aTransition" component={ATransition}/>
+                        <Route path="/useRender" render={(props) => {
+                            return (
+                                <Transition>use render</Transition>
+                            );
+                        }}/>
                         <Route path="/otherPath">
                             <Transition>other path</Transition>
                         </Route>
@@ -82,6 +90,43 @@ class Transition extends React.Component {
         );
     }
 
+}
+
+class ATransition extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentWillAppear(cb) {
+        TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: -100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
+    }
+
+    // componentDidAppear() {
+    //     //do stuff on appear
+    // }
+
+    componentWillEnter(cb) {
+        TweenLite.fromTo(ReactDOM.findDOMNode(this), d, {x: 100, opacity: 0}, {x: 0, opacity:1, onComplete: () => cb()});
+    }
+
+    componentDidEnter() {
+        //do stuff on enter
+    }
+
+    componentWillLeave(cb) {
+        // if(this.mounted)
+        TweenLite.to(ReactDOM.findDOMNode(this), d, {x: -100, opacity:0, onComplete: () => cb()});
+    }
+
+    componentDidLeave() {
+        //do stuff on leave
+    }
+
+    render() {
+        return (
+            <div className="example-app__transition">A Transition</div>
+        );
+    }
 }
 
 ReactDOM.render(
