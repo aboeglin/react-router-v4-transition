@@ -2,7 +2,7 @@
   "author": "Arnaud Boeglin",
   "license": "MIT",
   "name": "react-router-v4-transition",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "",
   "main": "lib/react-router-v4-transition.js",
   "repository": {
@@ -10,12 +10,6 @@
     "url": "https://github.com/aboeglin/react-router-v4-transition.git"
   },
   "dependencies": {
-    "gsap": "^1.20.2",
-    "prop-types": "^15.0.0",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1"
   },
   "peerDependencies": {
     "react": "^15.0.0",
@@ -24,6 +18,12 @@
     "prop-types": "^15.0.0"
   },
   "devDependencies": {
+    "gsap": "^1.20.2",
+    "prop-types": "^15.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
