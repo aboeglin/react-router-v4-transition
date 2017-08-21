@@ -21,6 +21,13 @@ describe('TransitionSwitch', () => {
         spies.push(sinon.spy(Transition.prototype, 'componentDidEnter'));
         spies.push(sinon.spy(Transition.prototype, 'componentWillLeave'));
         spies.push(sinon.spy(Transition.prototype, 'componentDidLeave'));
+
+        spies.push(sinon.spy(InstantTransition.prototype, 'componentWillAppear'));
+        spies.push(sinon.spy(InstantTransition.prototype, 'componentDidAppear'));
+        spies.push(sinon.spy(InstantTransition.prototype, 'componentWillEnter'));
+        spies.push(sinon.spy(InstantTransition.prototype, 'componentDidEnter'));
+        spies.push(sinon.spy(InstantTransition.prototype, 'componentWillLeave'));
+        spies.push(sinon.spy(InstantTransition.prototype, 'componentDidLeave'));
     });
 
     beforeEach(() => {
@@ -144,6 +151,33 @@ describe('TransitionSwitch', () => {
 
     });
 
+    it('should pass route props', () => {
+        //Should have match, location, history
+        const wrapper = mount(<TestApp />);
+
+        let props = wrapper.find(Transition).node.props
+        expect(props.match).not.toBe(undefined);
+        expect(props.location).not.toBe(undefined);
+        expect(props.history).not.toBe(undefined);
+    });
+
+    it('should call hooks on instant transition', () => {
+
+        const wrapper = mount(<TestAppWithInstantTransition />);
+        const routerWrapper = wrapper.find(MemoryRouter);
+
+        expect(InstantTransition.prototype.componentWillAppear.calledOnce).toBe(true);
+        expect(InstantTransition.prototype.componentDidAppear.calledOnce).toBe(true);
+
+        routerWrapper.node.history.push('/otherPath');
+
+        expect(InstantTransition.prototype.componentWillLeave.calledOnce).toBe(true);
+        expect(InstantTransition.prototype.componentDidLeave.calledOnce).toBe(true);
+        expect(InstantTransition.prototype.componentWillEnter.calledOnce).toBe(true);
+        expect(InstantTransition.prototype.componentDidEnter.calledOnce).toBe(true);
+
+    });
+
 });
 
 class TestAppParallel extends React.Component {
@@ -187,6 +221,24 @@ class TestApp extends React.Component {
                     </Route>
                     <Route path="/">
                         <Transition/>
+                    </Route>
+                </TransitionSwitch>
+            </MemoryRouter>
+        );
+    }
+}
+
+class TestAppWithInstantTransition extends React.Component {
+
+    render() {
+        return(
+            <MemoryRouter initialEntries={['/']} initialIndex={0}>
+                <TransitionSwitch parallel={false}>
+                    <Route exact path="/">
+                        <InstantTransition>root path</InstantTransition>
+                    </Route>
+                    <Route exact path="/otherPath">
+                        <InstantTransition>other path</InstantTransition>
                     </Route>
                 </TransitionSwitch>
             </MemoryRouter>
@@ -249,6 +301,40 @@ class Transition extends React.Component {
         setTimeout(() => {
             cb();
         }, 1000);
+    }
+
+    componentDidLeave() {
+        //do stuff
+    }
+
+    render() {
+        return (
+            <div>{this.props.children}</div>
+        );
+    }
+
+}
+
+class InstantTransition extends React.Component {
+
+    componentWillAppear(cb) {
+        cb();
+    }
+
+    componentDidAppear() {
+        //do stuff on appear
+    }
+
+    componentWillEnter(cb) {
+        cb();
+    }
+
+    componentDidEnter() {
+        //do stuff
+    }
+
+    componentWillLeave(cb) {
+        cb();
     }
 
     componentDidLeave() {

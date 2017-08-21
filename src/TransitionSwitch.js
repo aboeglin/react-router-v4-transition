@@ -148,7 +148,8 @@ export class TransitionSwitch extends React.Component {
                         if (ref)
                             this.enteringRouteChildRef = ref
                     },
-                    key: `child-${child.key}`
+                    key: `child-${child.key}`,
+                    ...props
                 });
             }
             else if(child.key == this.state.leavingRouteKey) {
@@ -166,7 +167,8 @@ export class TransitionSwitch extends React.Component {
                         if (ref)
                             this.leavingRouteChildRef = ref
                     },
-                    key: `child-${child.key}`
+                    key: `child-${child.key}`,
+                    ...props
                 });
             }
 
@@ -175,7 +177,7 @@ export class TransitionSwitch extends React.Component {
         // If it's not parallel, we only render the enteringRoute when the leavingRoute did leave
         if(!this.props.parallel) {
             if(this.state.leavingRouteKey)
-                enteringChild = null
+                enteringChild = null;
         }
 
         return (
@@ -200,6 +202,12 @@ export class TransitionSwitch extends React.Component {
         let location = this.getLocation(this.props, this.context);
         let prevMatch = this.getMatch(prevProps, prevContext);
         let match = this.getMatch(this.props, this.context);
+
+        //If it's not parallel, we check if the leaving route has left and call the entering transition
+        if(!this.props.parallel && this.enteringRouteChildRef && this.enteringRouteChildRef.componentWillEnter) {
+            if(prevState.enteringRouteKey == this.state.enteringRouteKey && this.state.leavingRouteKey == null && prevState.leavingRouteKey != null)
+                this.enteringRouteChildRef.componentWillEnter(() => this.enteringChildEntered());
+        }
 
         //If the location didn't change we do nothing and let the eventual active transitions run
         if(prevLocation.pathname == location.pathname && prevMatch.isExact == match.isExact)
@@ -253,9 +261,5 @@ export class TransitionSwitch extends React.Component {
             ...this.state,
             leavingRouteKey: null
         });
-
-        //If it's not parallel, we start the entering transition when the leaving child has left.
-        if(!this.props.parallel && this.enteringRouteChildRef && this.enteringRouteChildRef.componentWillEnter)
-            this.enteringRouteChildRef.componentWillEnter(() => this.enteringChildEntered());
     }
 }
