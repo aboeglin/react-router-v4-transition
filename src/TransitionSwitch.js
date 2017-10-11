@@ -120,6 +120,22 @@ export class TransitionSwitch extends React.Component {
         }
     }
 
+    /**
+     * If neither the entering or leaving key has changed, we don't need to
+     * re-render, which would cause a remounting of the underlying component
+     * in routes that have a path that can resolve to different values such as
+     * /path/:param.
+     * @param  {object} nextProps
+     * @param  {object} nextState
+     * @return {boolean}
+     */
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            this.state.enteringRouteKey !== nextState.enteringRouteKey
+            || this.state.leavingRouteKey !== nextState.leavingRouteKey
+        );
+    }
+
     render() {
         let enteringChild = null;
         let leavingChild = null;
