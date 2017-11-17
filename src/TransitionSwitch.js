@@ -58,6 +58,10 @@ export class TransitionSwitch extends React.Component {
         this.updateChildren(nextProps, nextContext)
     }
 
+    componentWillUpdate() {
+        this.prevContext = Object.assign({}, this.context);
+    }
+
     /**
      * Update internal state of the children to render
      *
@@ -197,7 +201,7 @@ export class TransitionSwitch extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState, prevContext) {
+    componentDidUpdate(prevProps, prevState, prevContext = this.prevContext) {
         let prevLocation = this.getLocation(prevProps, prevContext);
         let location = this.getLocation(this.props, this.context);
         let prevMatch = this.getMatch(prevProps, prevContext);
