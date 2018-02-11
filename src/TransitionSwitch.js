@@ -32,7 +32,7 @@ export class TransitionSwitch extends React.Component {
 
     static contextTypes = {
         router: PropTypes.shape({
-            route: PropTypes.object.isRequired
+            history: PropTypes.object.isRequired
         }).isRequired
     };
 
