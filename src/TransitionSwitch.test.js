@@ -7,7 +7,7 @@ import {MemoryRouter, Route} from 'react-router';
 import {TransitionSwitch} from './';
 import PropTypes from 'prop-types';
 import sinon from 'sinon';
-import Adapter from 'enzyme-adapter-react-15';
+import Adapter from 'enzyme-adapter-react-16';
 
 Enzyme.configure({adapter: new Adapter()});
 
