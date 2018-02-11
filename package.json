@@ -2,7 +2,7 @@
   "author": "Arnaud Boeglin",
   "license": "MIT",
   "name": "react-router-v4-transition",
-  "version": "0.1.8",
+  "version": "1.0.0",
   "description": "",
   "main": "lib/react-router-v4-transition.js",
   "repository": {
