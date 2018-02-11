@@ -1,12 +1,15 @@
 /**
  * Created by Arnaud on 08/07/2017.
  */
-import {mount} from 'enzyme';
+import Enzyme, {mount} from 'enzyme';
 import React from 'react';
 import {MemoryRouter, Route} from 'react-router';
 import {TransitionSwitch} from './';
 import PropTypes from 'prop-types';
 import sinon from 'sinon';
+import Adapter from 'enzyme-adapter-react-16';
+
+Enzyme.configure({adapter: new Adapter()});
 
 describe('TransitionSwitch', () => {
     const spies = [];
@@ -47,6 +50,7 @@ describe('TransitionSwitch', () => {
 
         expect(Transition.prototype.componentDidAppear.called).toBe(false);
         jest.runAllTimers();
+		wrapper.update();
         expect(Transition.prototype.componentDidAppear.calledOnce).toBe(true);
     });
 
@@ -55,18 +59,17 @@ describe('TransitionSwitch', () => {
         const wrapper = mount(<TestApp />);
         const routerWrapper = wrapper.find(MemoryRouter);
 
-        // expect(wrapper.find(TransitionSwitch.WrappedComponent).node.state.status).toBe('WILL_APPEAR');
-
         //WILL APPEAR
         jest.runAllTimers();
         //DID APPEAR
-        routerWrapper.node.history.push('/otherPath');
+        routerWrapper.instance().history.push('/otherPath');
         //WILL LEAVE
         jest.runAllTimers();
         //DID LEAVE
         //WILL ENTER
         jest.runAllTimers();
         //DID ENTER
+        wrapper.update();
 
         expect(Transition.prototype.componentWillAppear.calledOnce).toBe(true);
         expect(Transition.prototype.componentDidAppear.calledOnce).toBe(true);
@@ -83,10 +86,11 @@ describe('TransitionSwitch', () => {
         const routerWrapper = wrapper.find(MemoryRouter);
 
         expect(wrapper.find(TransitionWithoutHooks).length).toBe(1);
-        routerWrapper.node.history.push('/');
 
-        routerWrapper.node.history.push('/noHook');
+		routerWrapper.instance().history.push('/');
+        routerWrapper.instance().history.push('/noHook');
         jest.runAllTimers(); //It runs the leaving transition of the route at path "/"
+		wrapper.update();
 
         expect(wrapper.find(TransitionWithoutHooks).length).toBe(1);
     });
@@ -96,14 +100,16 @@ describe('TransitionSwitch', () => {
         const wrapper = mount(<TestAppMountWithNoHook />);
         const routerWrapper = wrapper.find(MemoryRouter);
 
-        routerWrapper.node.history.push('/'); //We go to "/"
-        routerWrapper.node.history.push('/404'); //We go to a non existing route
+        routerWrapper.instance().history.push('/'); //We go to "/"
+        routerWrapper.instance().history.push('/404'); //We go to a non existing route
+		wrapper.update();
 
-        expect(wrapper.find(TransitionSwitch).node.state.enteringRouteKey).toBe(null);
-        expect(wrapper.find(TransitionSwitch).node.state.leavingRouteKey).not.toBe(null);
+        expect(wrapper.find(TransitionSwitch).instance().state.enteringRouteKey).toBe(null);
+        expect(wrapper.find(TransitionSwitch).instance().state.leavingRouteKey).not.toBe(null);
 
         jest.runAllTimers(); //We run the leaving transition
-        expect(wrapper.find(TransitionSwitch).node.state.leavingRouteKey).toBe(null);
+		wrapper.update();
+        expect(wrapper.find(TransitionSwitch).instance().state.leavingRouteKey).toBe(null);
     });
 
     it('should do nothing if there is no route change', () => {
@@ -115,7 +121,8 @@ describe('TransitionSwitch', () => {
         //WILL APPEAR
         jest.runAllTimers(); //It runs the appearing animation of "/"
         //DID APPEAR
-        routerWrapper.node.history.push('/'); //pushes the same route
+        routerWrapper.instance().history.push('/'); //pushes the same route
+		wrapper.update();
 
         expect(Transition.prototype.componentWillAppear.calledOnce).toBe(true);
         expect(Transition.prototype.componentDidAppear.calledOnce).toBe(true);
@@ -130,12 +137,14 @@ describe('TransitionSwitch', () => {
 
         //WILL APPEAR
         jest.runAllTimers(); //It runs the appearing animation of "/"
+		wrapper.update();
         //DID APPEAR
         expect(wrapper.find(Transition).length).toBe(1);
         expect(Transition.prototype.componentWillAppear.calledOnce).toBe(true);
         expect(Transition.prototype.componentDidAppear.calledOnce).toBe(true);
 
-        routerWrapper.node.history.push('/otherPath');
+        routerWrapper.instance().history.push('/otherPath');
+		wrapper.update();
         //WILL LEAVE
         //WILL ENTER
         expect(Transition.prototype.componentWillLeave.calledOnce).toBe(true);
@@ -143,6 +152,7 @@ describe('TransitionSwitch', () => {
         expect(wrapper.find(Transition).length).toBe(2);
 
         jest.runAllTimers();
+		wrapper.update();
         //DID LEAVE
         //DID ENTER
         expect(Transition.prototype.componentDidLeave.calledOnce).toBe(true);
@@ -155,7 +165,7 @@ describe('TransitionSwitch', () => {
         //Should have match, location, history
         const wrapper = mount(<TestApp />);
 
-        let props = wrapper.find(Transition).node.props
+        let props = wrapper.find(Transition).props()
         expect(props.match).not.toBe(undefined);
         expect(props.location).not.toBe(undefined);
         expect(props.history).not.toBe(undefined);
@@ -169,7 +179,8 @@ describe('TransitionSwitch', () => {
         expect(InstantTransition.prototype.componentWillAppear.calledOnce).toBe(true);
         expect(InstantTransition.prototype.componentDidAppear.calledOnce).toBe(true);
 
-        routerWrapper.node.history.push('/otherPath');
+        routerWrapper.instance().history.push('/otherPath');
+		wrapper.update();
 
         expect(InstantTransition.prototype.componentWillLeave.calledOnce).toBe(true);
         expect(InstantTransition.prototype.componentDidLeave.calledOnce).toBe(true);
