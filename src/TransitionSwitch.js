@@ -4,6 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {matchPath, Route} from 'react-router';
+import { diff } from 'deep-object-diff';
 
 const routePropType = PropTypes.shape({
     type: PropTypes.oneOf([Route])
@@ -90,8 +91,15 @@ export class TransitionSwitch extends React.Component {
 
                 //In case it's the current child we do nothing
                 if(this.state.enteringRouteKey) {
-                    if(this.state.enteringRouteKey == child.key)
+                    const existsParamsDiff = Object.keys(diff(this.state.match.params, match.params)).length > 0;
+                    if(this.state.enteringRouteKey == child.key) {
+                        if (existsParamsDiff) {
+                            this.setState({
+                                match: match
+                            });
+                        }
                         return
+                    }
                 }
 
                 //If it's not parallel, it would happen when a route change occurs while transitioning.
@@ -102,7 +110,6 @@ export class TransitionSwitch extends React.Component {
                 }
 
                 this.setState({
-                    ...this.state,
                     leavingRouteKey: this.state.leavingRouteKey && !this.props.parallel ? this.state.leavingRouteKey : this.state.enteringRouteKey,
                     enteringRouteKey: child.key,
                     match: match
@@ -116,7 +123,6 @@ export class TransitionSwitch extends React.Component {
             this.enteringRouteChildRef = null;
 
             this.setState({
-                ...this.state,
                 leavingRouteKey: this.state.enteringRouteKey,
                 enteringRouteKey: null,
                 match: null
@@ -262,7 +268,6 @@ export class TransitionSwitch extends React.Component {
 
         this.leavingRouteChildRef = null;
         this.setState({
-            ...this.state,
             leavingRouteKey: null
         });
     }
