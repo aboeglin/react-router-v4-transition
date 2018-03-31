@@ -11,10 +11,10 @@
   },
   "dependencies": {},
   "peerDependencies": {
+    "prop-types": "^15.0.0",
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
-    "react-router": "^4.0.0",
-    "prop-types": "^15.0.0"
+    "react-router": "^4.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -38,7 +38,8 @@
     "react-router-dom": "^4.1.1",
     "react-test-renderer": "^16.2.0",
     "sinon": "^2.3.6",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.2.1"
   },
   "scripts": {
     "test": "jest",
@@ -49,7 +50,7 @@
     "build:prod": "webpack --progress -p",
     "prepublish": "webpack --progress -p",
     "build:example": "webpack --config webpack.config.example.js",
-    "start:server": "webpack-dev-server --config webpack.config.example.js --content-base ./example --port 8080 --history-api-fallback index.html"
+    "start:server": "webpack-dev-server --config webpack.config.example.js"
   },
   "jest": {
     "verbose": true,
