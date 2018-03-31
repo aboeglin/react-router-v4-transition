@@ -49,7 +49,7 @@
     "build:prod": "webpack --progress -p",
     "prepublish": "webpack --progress -p",
     "build:example": "webpack --config webpack.config.example.js",
-    "start:server": "webpack-dev-server --content-base ./example --port 8080 --history-api-fallback index.html"
+    "start:server": "webpack-dev-server --config webpack.config.example.js --content-base ./example --port 8080 --history-api-fallback index.html"
   },
   "jest": {
     "verbose": true,
