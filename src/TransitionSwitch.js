@@ -185,7 +185,7 @@ export class TransitionSwitch extends React.Component {
         }
 
         return (
-            <div>
+            <div className="transition-container">
                 {enteringChild}
                 {leavingChild}
             </div>
