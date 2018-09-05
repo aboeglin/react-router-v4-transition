@@ -183,9 +183,10 @@ export class TransitionSwitch extends React.Component {
             if(this.state.leavingRouteKey)
                 enteringChild = null;
         }
+        const transitionContainerClassName = this.props.className ? this.props.className:'';
 
         return (
-            <div className="transition-container">
+            <div className={"transition-container " + transitionContainerClassName}>
                 {enteringChild}
                 {leavingChild}
             </div>
