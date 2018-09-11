@@ -4,7 +4,7 @@
   "name": "react-router-v4-transition",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/react-router-v4-transition.js",
+  "main": "src/react-router-v4-transition.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/aboeglin/react-router-v4-transition.git"

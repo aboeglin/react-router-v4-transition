@@ -135,12 +135,6 @@ export class TransitionSwitch extends React.Component {
             location: this.getLocation(this.props, this.context),
             history: this.context.router.history
         }; 
-        if (!this.isDOMComponent) {
-            props = {
-                ...props,
-                staticContext: this.context.router.staticContext
-            }
-        }
 
         React.Children.map(this.props.children, child => child).forEach(child => {
 
