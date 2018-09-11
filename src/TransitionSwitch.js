@@ -4,6 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {matchPath, Route} from 'react-router';
+import TestUtils from 'react-dom/test-utils'; // ES6
 
 const routePropType = PropTypes.shape({
     type: PropTypes.oneOf([Route])
@@ -123,17 +124,23 @@ export class TransitionSwitch extends React.Component {
             });
         }
     }
-
+    isDOMComponent(){
+        return !!(this && this.tagName && this.getDOMNode);
+    }
     render() {
         let enteringChild = null;
         let leavingChild = null;
-
-        const props = {
+        let props = {
             match: this.state.match,
             location: this.getLocation(this.props, this.context),
-            history: this.context.router.history,
-            staticContext: this.context.router.staticContext
-        };
+            history: this.context.router.history
+        }; 
+        if (!this.isDOMComponent) {
+            props = {
+                ...props,
+                staticContext: this.context.router.staticContext
+            }
+        }
 
         React.Children.map(this.props.children, child => child).forEach(child => {
 
